@@ -18,8 +18,6 @@ class SfmApplication {
     }
 }
 
-
-
 fun main(args: Array<String>) {
     SpringApplication.run(SfmApplication::class.java, *args)
 }
