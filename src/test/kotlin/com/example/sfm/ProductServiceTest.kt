@@ -19,15 +19,15 @@ class ProductServiceTest {
     @Test
     @Throws(Exception::class)
     fun eventsTake10() {
-        val product = productService!!.all().blockFirst()
-
+        val product = productService?.all()?.blockFirst()
         StepVerifier.withVirtualTime {
-            this.productService!!.events(product.id!!)
-                    .take(10)
-                    .collectList()
+            this.productService?.events(product?.id.toString())?.take(10)?.collectList()
         }
-                .thenAwait(Duration.ofHours(1))
-                .consumeNextWith({ list -> assertTrue(list.size == 10) })
+                .thenAwait(Duration.ofMinutes(1))
+                .consumeNextWith({
+                    println("Event list size "+ it.size)
+                    assertTrue(it.size == 10)
+                })
                 .verifyComplete()
     }
 }
