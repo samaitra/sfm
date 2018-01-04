@@ -8,7 +8,9 @@ import org.springframework.context.ApplicationContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.junit.Before
-
+import org.springframework.web.reactive.function.client.ExchangeFilterFunctions
+import org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication
+import java.util.function.Consumer
 
 
 @RunWith(SpringRunner::class)
@@ -25,6 +27,7 @@ class SfmApplicationTests {
 		client = WebTestClient
 				.bindToApplicationContext(context)
 				.configureClient()
+				.filter(basicAuthentication())
 				.baseUrl("http://localhost:8080/")
 				.build()
 	}
@@ -36,10 +39,14 @@ class SfmApplicationTests {
 	@Test
 	fun getProducts() {
 		client!!.get().uri("/products/")
+				.attributes(myCredentials())
 				.exchange()
 				.expectStatus()
 				.isOk()
 	}
 
+	private fun myCredentials(): Consumer<Map<String, Any>> {
+		return ExchangeFilterFunctions.Credentials.basicAuthenticationCredentials("admin", "pwd")
+	}
 
 }
